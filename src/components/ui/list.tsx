@@ -15,6 +15,7 @@ type ListProps = {
 export function List({ name, data }: ListProps) {
 
   const [item, setitem] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,8 @@ export function List({ name, data }: ListProps) {
         setitem(items as any);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -46,7 +49,7 @@ export function List({ name, data }: ListProps) {
       <p className="text-xl font-semibold md:text-2xl">{name}</p>
       <hr className="border-[#CCCCCC] border-[1px] rounded-[5px]" />
       <div className="w-full">
-        <Listbox item={item} datas={data} name={name} />
+        <Listbox item={item} datas={data} name={name} isLoading={isLoading} />
       </div>
     </div>
 

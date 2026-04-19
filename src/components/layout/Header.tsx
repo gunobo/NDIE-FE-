@@ -68,7 +68,7 @@ export const Header = () => {
 
         <div className="hidden items-center gap-6 md:flex">
           {showLoading ? (
-            <span className="text-gray-400">로딩중...</span>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-500" />
           ) : isLoggedIn ? (
             <button onClick={handleLogout} className="cursor-pointer text-sm font-medium">
               로그아웃
@@ -101,8 +101,11 @@ export const Header = () => {
       </div>
 
       <div
-        className={`md:hidden ${isMenuOpen ? "flex" : "hidden"} flex-col gap-4 border-t border-[#EAEAEA] bg-white px-4 py-4 shadow-sm`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
+      <div className="flex flex-col gap-4 border-t border-[#EAEAEA] bg-white px-4 py-4 shadow-sm">
         <nav className="flex flex-col gap-3 text-sm">
           {navLinks.map(({ href, label }) => (
             <Link
@@ -127,7 +130,7 @@ export const Header = () => {
         </nav>
         <div className="border-t border-[#EAEAEA] pt-3">
           {showLoading ? (
-            <span className="text-gray-400">로딩중...</span>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-500" />
           ) : isLoggedIn ? (
             <button onClick={logoutAndClose} className="text-sm font-medium">
               로그아웃
@@ -143,6 +146,7 @@ export const Header = () => {
             </div>
           )}
         </div>
+      </div>
       </div>
     </header>
   );

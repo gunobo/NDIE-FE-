@@ -3,7 +3,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Loading from '@/components/ui/loading';
 
 type ListItem = {
   id: string | number;
@@ -17,9 +16,10 @@ type ListboxProps = {
   item: ListItem[];
   datas: string;
   name: string;
+  isLoading?: boolean;
 };
 
-export default function Listbox({ item, datas, name }: ListboxProps) {
+export default function Listbox({ item, datas, name, isLoading }: ListboxProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState<ListItem[]>(item);
@@ -64,7 +64,11 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
   return (
     <div className="w-full">
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <p className="text-sm font-semibold text-gray-700">전체 {filteredItems.length} 건</p>
+        {isLoading ? (
+          <div className="h-4 w-20 animate-pulse rounded bg-gray-200" />
+        ) : (
+          <p className="text-sm font-semibold text-gray-700">전체 {filteredItems.length} 건</p>
+        )}
 
         <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto">
           <input
@@ -84,16 +88,39 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
       </div>
 
       <hr className="border border-black my-1" />
-      {Array.isArray(filteredItems) ? (
-        <>
-          <div className="hidden md:grid md:grid-cols-5 md:text-center md:text-sm md:font-semibold md:py-2 md:border-b md:border-gray-400">
-            <p>번호</p>
-            <p>제목</p>
-            <p>작성자</p>
-            <p>등록일</p>
-            <p>조회</p>
-          </div>
+      <div className="hidden md:grid md:grid-cols-5 md:text-center md:text-sm md:font-semibold md:py-2 md:border-b md:border-gray-400">
+        <p>번호</p>
+        <p>제목</p>
+        <p>작성자</p>
+        <p>등록일</p>
+        <p>조회</p>
+      </div>
 
+      {isLoading ? (
+        <>
+          <div className="hidden md:block">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="grid grid-cols-5 border-b border-gray-200 py-3">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <div key={j} className="flex justify-center">
+                    <div className="h-4 w-16 animate-pulse rounded bg-gray-200" />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col divide-y divide-gray-200 md:hidden">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-2 py-3">
+                <div className="h-3 w-24 animate-pulse rounded bg-gray-200" />
+                <div className="h-5 w-full animate-pulse rounded bg-gray-200" />
+                <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
           <div className="hidden md:block">
             {hasResults ? (
               filteredItems.map((i, index) => (
@@ -113,7 +140,6 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
               <div className="py-6 text-center text-gray-500">검색 결과가 없습니다.</div>
             )}
           </div>
-
           <div className="flex flex-col divide-y divide-gray-200 md:hidden">
             {hasResults ? (
               filteredItems.map((i, index) => (
@@ -138,10 +164,6 @@ export default function Listbox({ item, datas, name }: ListboxProps) {
             )}
           </div>
         </>
-      ) : hasSearched ? (
-        <div className="py-4 text-center text-gray-500">검색 결과가 없습니다.</div>
-      ) : (
-        <Loading />
       )}
     </div>
   );
