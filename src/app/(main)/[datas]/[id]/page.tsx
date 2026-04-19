@@ -20,6 +20,7 @@ type CommentType = {
 export default function DetailPage() {
   const [commentText, setCommentText] = useState('');
   const [role, setRole] = useState<string | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [item, setItem] = useState<any>(null);
@@ -181,9 +182,15 @@ export default function DetailPage() {
             <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
               {item.image && (
                 <div className="w-full lg:w-2/5">
-                  <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-50">
+                  <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.image} alt="이미지" className="h-full w-full object-cover" />
+                    <img
+                      src={item.image}
+                      alt="이미지"
+                      loading="lazy"
+                      onLoad={() => setImageLoaded(true)}
+                      className={`h-full w-full object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                    />
                   </div>
                 </div>
               )}
