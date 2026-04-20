@@ -77,8 +77,6 @@ export default function SignupForm() {
       let message = error?.message || "회원가입 중 오류가 발생했습니다.";
       if (error?.code === "auth/email-already-in-use") {
         message = "이미 가입된 이메일입니다.";
-        alert(message);
-        router.push("/login");
         return;
       } else if (error?.code === "auth/weak-password") {
         message = "비밀번호가 너무 약합니다. 6자 이상으로 설정해주세요.";

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-hot-toast"; 
 
 export default function LoginSuccessContent() {
   const router = useRouter();
@@ -10,9 +11,20 @@ export default function LoginSuccessContent() {
 
   useEffect(() => {
     const code = searchParams.get("code");
+    const redirect = searchParams.get("redirect"); 
+
+    
+    if (redirect && !code) {
+  toast.error("로그인이 필요합니다");
+
+ 
+  router.replace("/"); 
+
+  return;
+}
 
     if (!code) {
-      router.replace("/login");
+      router.replace("/"); 
       return;
     }
 
@@ -41,14 +53,27 @@ export default function LoginSuccessContent() {
           throw new Error(errorMessage);
         }
 
-        // Firebase Auth로 로그인 처리 (AuthProvider가 자동 감지)
-        router.push("/");
+        
+        if (redirect) {
+          router.replace(redirect);
+        } else {
+          router.replace("/");
+        }
       } catch (error) {
-        alert(error instanceof Error ? error.message : "로그인 중 오류 발생");
+        
+        toast.error(
+          error instanceof Error ? error.message : "로그인 중 오류 발생"
+        );
       }
     };
+
     verifyLogin();
   }, [API_BASE, router, searchParams]);
 
-  return <p>카카오 로그인 처리 중...</p>;
+  return (
+  <div className="flex flex-col items-center justify-center h-screen gap-3">
+  <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+  <p className="text-sm text-gray-500">카카오 로그인 처리 중...</p>
+</div>
+);
 }
